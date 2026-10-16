@@ -1,43 +1,100 @@
-package sipalab;
 
-import koleksi.Keranjang;
-import layanan.InventarisLab;
-import model.*;
-import pembanding.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Alat;
+import model.Laptop;
+import model.Proyektor;
+import model.AlatUkur;
+import model.Komponen;
+import berkas.EksporLaporan;
+import berkas.PenyimpanBerkas;
 
 public class Main {
+
     public static void main(String[] args) {
-        // 1. Inisialisasi Inventaris
-        InventarisLab lab = new InventarisLab();
+        try {
+            // E.1: Pengujian penulisan berkas
+            tulisTanpaMenutup();
+            tulisDenganAman();
 
-        // 2. Buat Objek Laptop & Proyektor
-        Laptop laptop = new Laptop("LP-002", "Lenovo ThinkPad", 2022, "Intel i7", 16);
-        Proyektor proyektor = new Proyektor("PJ-003", "Epson EB-X51", 2021, 3300);
+            System.out.println("Pengujian E.1 selesai.");
 
-        // 3. Tambahkan ke Inventaris Lab
-        lab.tambahAlat(laptop);
-        lab.tambahAlat(proyektor);
+            // Membuat data contoh inventaris
+            List<Alat> daftarAlat = new ArrayList<>();
 
-        // 4. Uji Generics (Keranjang)
-        Keranjang<Alat> keranjang = new Keranjang<>(5);
-        keranjang.tambah(laptop);
-        keranjang.tambah(proyektor);
+            daftarAlat.add(new Laptop(
+                    "LP-002", "Laptop", 2024, "Intel Core i5", 8));
 
-        System.out.println("===== ISI KERANJANG =====");
-        for (Alat a : keranjang) {
-            System.out.println("- " + a.getNama());
+            daftarAlat.add(new Proyektor(
+                    "PJ-003", "Proyektor", 2023, 3500));
+
+            daftarAlat.add(new AlatUkur(
+                    "AU-004", "Alat Ukur", 2022,
+                    "cm", LocalDate.of(2025, 3, 10)));
+
+            daftarAlat.add(new Komponen(
+                    "KP-005", "Komponen", 2024, 10, 2));
+
+            // E.2: Ekspor laporan inventaris ke TXT
+            EksporLaporan.eksporLaporan(
+                    "laporan_inventaris.txt", daftarAlat);
+
+            System.out.println("Laporan TXT berhasil dibuat.");
+
+            // E.3: Serialisasi objek ke berkas
+            PenyimpanBerkas.simpan(
+                    "inventaris.dat", daftarAlat);
+
+            System.out.println("Data inventaris berhasil disimpan.");
+
+            // Membaca kembali data hasil serialisasi
+            List<Alat> hasilMuat =
+                    PenyimpanBerkas.baca("inventaris.dat");
+
+            System.out.println("Jumlah data sebelum disimpan: "
+                    + daftarAlat.size());
+
+            System.out.println("Jumlah data setelah dimuat: "
+                    + hasilMuat.size());
+
+            if (daftarAlat.size() == hasilMuat.size()) {
+                System.out.println(
+                        "Pengujian serialisasi berhasil.");
+            } else {
+                System.out.println(
+                        "Pengujian serialisasi gagal.");
+            }
+
+            // Bagian F: Ekspor laporan CSV
+            EksporLaporan.tulisCSV(
+                    "laporan_inventaris.csv", daftarAlat);
+
+            System.out.println("Laporan CSV berhasil dibuat.");
+            System.out.println("Semua pengujian selesai.");
+
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(
+                    "Terjadi kesalahan: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
 
-        // 5. Uji Pengurutan Comparator Nama
-        System.out.println("\n===== URUT BERDASARKAN NAMA =====");
-        for (Alat a : lab.urut(new UrutNama())) {
-            System.out.println(a.getNama());
-        }
+    // Atribusi AI: bantuan pengujian penulisan berkas
+    // sesuai Job Sheet 7 bagian E.1.
+    public static void tulisTanpaMenutup() throws IOException {
+        FileWriter tulis = new FileWriter("uji_lupa_tutup.txt");
+        tulis.write("Baris ini seharusnya tersimpan.");
+        // Sengaja tidak memanggil close() untuk pengujian.
+    }
 
-        // 6. Uji Pengurutan Comparator Tahun
-        System.out.println("\n===== URUT BERDASARKAN TAHUN =====");
-        for (Alat a : lab.urut(new UrutTahun())) {
-            System.out.println(a.getNama() + " (" + a.getTahun() + ")");
+    // Atribusi AI: bantuan penggunaan try-with-resources.
+    public static void tulisDenganAman() throws IOException {
+        try (FileWriter tulis = new FileWriter("uji_aman.txt")) {
+            tulis.write("Baris ini pasti tersimpan.");
         }
     }
 }

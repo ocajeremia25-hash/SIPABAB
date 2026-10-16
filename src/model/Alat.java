@@ -1,9 +1,15 @@
+
 package model;
 
-// Bantuan AI digunakan untuk membantu menambahkan method laporanRingkas
-// agar pemrosesan status alat dapat menggunakan dynamic binding.
+import java.io.Serializable;
 
-public abstract class Alat {
+// Bantuan AI digunakan untuk menambahkan Serializable
+// dan serialVersionUID sesuai Job Sheet 7 bagian E.3.
+// Method laporanRingkas tetap dipertahankan dari Job Sheet 6.
+
+public abstract class Alat implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected String kodeAlat;
     protected String nama;
@@ -21,17 +27,14 @@ public abstract class Alat {
 
     public abstract boolean siapDipinjam();
 
-    // Getter untuk nama alat
     public String getNama() {
         return nama;
     }
 
-    // Getter untuk kode alat (dibutuhkan oleh InventarisLab)
     public String getKode() {
         return kodeAlat;
     }
 
-    // Getter untuk tahun perolehan (dibutuhkan oleh UrutTahun)
     public int getTahun() {
         return tahunPerolehan;
     }

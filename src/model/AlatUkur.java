@@ -1,8 +1,15 @@
+
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class AlatUkur extends Alat implements Kalibrasiable {
+// Bantuan AI: penambahan serialVersionUID
+// sesuai Job Sheet 7 bagian E.3.
+
+public class AlatUkur extends Alat implements Kalibrasiable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String satuan;
     private LocalDate kalibrasiTerakhir;
