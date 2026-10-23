@@ -1,4 +1,4 @@
-
+    
 package berkas;
 
 import java.io.BufferedWriter;
